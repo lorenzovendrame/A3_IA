@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+* {
+    font-family: Arial;
+}
+
+#grid-container {
+  display: grid;
+  gap: 1px;
+  grid-template-columns: repeat(10, 120px);
+  background-color: rgb(0, 44, 109);;
+  padding: 20px ;
+  justify-content: center;
+}
+
+#titulo {
+    text-align: center;
+    font-size: 30px;
+}
+
+.grid-item {
+  background-color: rgba(255, 255, 153, 1);
+  border: 0px solid rgba(0, 0, 0, 0.5);
+  width: auto;
+  padding-bottom: 50px;
+  font-size: 20px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.grid-item-inicio {
+  background-color: rgb(218, 218, 218);
+  border: 10px solid rgb(255, 75, 0);
+  width: auto;
+  padding-bottom: 50px;
+  font-size: 20px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.grid-item-fim {
+  background-color: rgb(218, 218, 218);
+  border: 10px solid rgb(4, 116, 0);
+  width: auto;
+  padding-bottom: 50px;
+  font-size: 20px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.grid-item-barreira {
+  background-color: rgb(218, 218, 218);
+  border: 10px solid rgba(0, 0, 0, 0.8);
+  width: auto;
+  padding-bottom: 50px;
+  font-size: 20px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>
+</head>
+
+<body>
+<h1 id="titulo">Labirinto A3</h1>
+<p>Integrantes: Lorenzo, Allana, Celso, Sâmya</p>
+
+<div id="grid-container"></div>
+
+</body>
+<script>
+    const container = document.getElementById("grid-container");
+    for (let row = 1; row <= 10; row++) {
+        for (let col = 1; col <= 10; col++) {
+            const square = document.createElement("div"); //Cria a div
+            square.id = `row${row}_col${col}`; // Coloca ID
+            square.className = "grid-item"; // Add uma classe pra estilizar
+            square.textContent = `${row}, ${col}`; // Opcional: Mostra posição linha e coluna
+            container.appendChild(square); // Associa o quadrado no container
+        }
+    }
+    const celulaInicio = document.getElementById("row1_col1");
+    celulaInicio.classList.add("grid-item-inicio");
+
+    const celulaFim = document.getElementById("row10_col10");
+    celulaFim.classList.add("grid-item-fim");
+
+    const cell = document.getElementById("row5_col4");
+    cell.classList.add("grid-item-barreira");
+</script>
+</html>
