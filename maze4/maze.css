@@ -1,0 +1,45 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
+
+#scoreboard {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(10, 80px);
+    grid-template-rows: repeat(10, 80px);
+}
+
+.cell {
+    width: 80px;
+    height: 80px;
+    border: 1px solid #000;
+}
+
+.cell-0 {
+    background-color: white; /* Caminho livre */
+}
+
+.cell-1 {
+    background-color: black; /* Obstáculo */
+}
+
+.cell-path {
+    background-color: yellow; /* Caminho encontrado */
+}
+
+.cell-recover-5 {
+    background-color: lightgreen; /* Recupera 5 pontos */
+}
+
+.cell-recover-10 {
+    background-color: lightblue; /* Recupera 10 pontos */
+}
