@@ -180,4 +180,22 @@ function startGame() {
     updateBoard();
 }
 
+document.addEventListener("DOMContentLoaded", function() {
+    const reiniciarButton = document.getElementById("reiniciar");
+    reiniciarButton.addEventListener("click", reiniciar);
+});
+    
+function reiniciar() {
+    document.getElementById('board').remove(); //Deletar tabuleiro atual
+    var boardDiv = document.createElement('div');
+    boardDiv.id = 'board'; // Set the ID of the new div
+    document.getElementById('reiniciar').after(boardDiv); //Criar div para colocar novo tabuleiro
+
+    score = 50;
+    board = [];
+    path = [];
+
+    startGame();
+}
+
 startGame();
