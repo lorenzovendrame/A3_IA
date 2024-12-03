@@ -63,6 +63,31 @@ function heuristic(a, b) {
     return Math.abs(a.row - b.row) + Math.abs(a.col - b.col); // Distância de Manhattan
 }
 
+function findBestPoint(current) {
+    const neighbors = [
+        { row: current.row + 1, col: current.col }, // baixo
+        { row: current.row - 1, col: current.col }, // cima
+        { row: current.row, col: current.col + 1 }, // direita
+        { row: current.row, col: current.col - 1 }  // esquerda
+    ];
+
+    let bestPoint = null;
+
+    for (const neighbor of neighbors) {
+        if (
+            neighbor.row >= 0 && neighbor.row < boardSize &&
+            neighbor.col >= 0 && neighbor.col < boardSize &&
+            (board[neighbor.row][neighbor.col].type === 'point5' ||
+            board[neighbor.row][neighbor.col].type === 'point10')
+        ) {
+            bestPoint = neighbor;
+            break; // Saia do loop assim que encontrar um ponto extra
+        }
+    }
+
+    return bestPoint; // Retorna a melhor célula com pontuação extra ou null
+}
+
 // Algoritmo A*
 function aStar(start, goal) {
     let openSet = [start];
@@ -89,8 +114,14 @@ function aStar(start, goal) {
             { row: current.row, col: current.col + 1 }, // direita
             { row: current.row, col: current.col - 1 }  // esquerda
         ];
+        /*const bestPoint = findBestPoint(current);
 
-        for (const neighbor of neighbors) {
+        if (bestPoint) {
+            path.push(bestPoint); // Adiciona a nova posição ao caminho
+            continue; // Volta para o início do loop while
+        }*/
+
+        /*for (const neighbor of neighbors) {
             if (
                 neighbor.row >= 0 && neighbor.row < boardSize &&
                 neighbor.col >= 0 && neighbor.col < boardSize &&
@@ -108,9 +139,36 @@ function aStar(start, goal) {
                     }
                 }
             }
-        }
-    }
+        }*/
+        let bestNeighbor = null;
+        let bestTentativeGScore = Infinity;
+        for (const neighbor of neighbors) {
+            if (
+                neighbor.row >= 0 && neighbor.row < boardSize &&
+                neighbor.col >= 0 && neighbor.col < boardSize &&
+                board[neighbor.row][neighbor.col].type !== 'obstacle'
+            ) {
+                const tentativeGScore = gScore[current.row][current.col] + 1;
 
+                if (tentativeGScore < gScore[neighbor.row][neighbor.col]) {
+                    bestTentativeGScore = tentativeGScore;
+                    bestNeighbor = neighbor;
+                }
+            }
+        }
+        console.log(bestNeighbor); // Teste bestNeighbor
+        if (bestNeighbor) {
+            cameFrom[`${bestNeighbor.row},${bestNeighbor.col}`] = current;
+            gScore[bestNeighbor.row][bestNeighbor.col] = bestTentativeGScore;
+            fScore[bestNeighbor.row][bestNeighbor.col] = bestTentativeGScore + heuristic(bestNeighbor, goal);
+
+            if (!openSet.some(n => n.row === bestNeighbor.row && n.col === bestNeighbor.col)) {
+                openSet.push(bestNeighbor);
+            }
+        }
+
+    }
+    reiniciar();
     return false; // Caminho não encontrado
 }
 
