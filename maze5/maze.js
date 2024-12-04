@@ -1,5 +1,5 @@
 const boardSize = 10;
-let score = 50;
+let score = 51;
 let board = [];
 let path = [];
 
@@ -20,9 +20,20 @@ function createBoard() {
     }
 }
 
+function getRandomDecimal() {
+    // Gera um número aleatório entre 0.10 e 0.25
+    const min = 0.10;
+    const max = 0.25;
+    
+    // Gera o número aleatório
+    const randomDecimal = (Math.random() * (max - min) + min).toFixed(2);
+    
+    return parseFloat(randomDecimal); // Retorna como número decimal
+}
+
 // Adicionando obstáculos
 function addObstacles() {
-    let obstaclesToPlace = Math.floor(boardSize * boardSize * 0.2); // 20% do tabuleiro
+    let obstaclesToPlace = Math.floor(boardSize * boardSize * getRandomDecimal());
     while (obstaclesToPlace > 0) {
         const row = Math.floor(Math.random() * boardSize);
         const col = Math.floor(Math.random() * boardSize);
@@ -98,10 +109,18 @@ function aStar(start, goal) {
             ) {
                 const tentativeGScore = gScore[current.row][current.col] + 1;
 
-                if (tentativeGScore < gScore[neighbor.row][neighbor.col]) {
+                // Adiciona um bônus se o vizinho tiver pontos extras
+                let bonus = 0;
+                if (board[neighbor.row][neighbor.col].type === 'point5') {
+                    bonus = 5; // Bônus para ponto 5
+                } else if (board[neighbor.row][neighbor.col].type === 'point10') {
+                    bonus = 10; // Bônus para ponto 10
+                }
+
+                if (tentativeGScore + bonus < gScore[neighbor.row][neighbor.col]) {
                     cameFrom[`${neighbor.row},${neighbor.col}`] = current;
                     gScore[neighbor.row][neighbor.col] = tentativeGScore;
-                    fScore[neighbor.row][neighbor.col] = tentativeGScore + heuristic(neighbor, goal);
+                    fScore[neighbor.row][neighbor.col] = tentativeGScore + heuristic(neighbor, goal) - bonus; //Ajusta o fScore
 
                     if (!openSet.some(n => n.row === neighbor.row && n.col === neighbor.col)) {
                         openSet.push(neighbor);
@@ -110,8 +129,7 @@ function aStar(start, goal) {
             }
         }
     }
-
-    return false; // Caminho não encontrado
+    reiniciar(); // Caminho não encontrado
 }
 
 // Reconstruir o caminho a partir dos nós visitados
@@ -148,14 +166,13 @@ function updateBoard() {
         // Marcar o caminho percorrido pelo robô
         if (path.some(p => p.row == row && p.col == col)) {
             cell.classList.add('path');
-            
+            score -=1; // Custo de movimento padrão é -1 ponto
+
             // Atualizar a pontuação conforme o tipo de célula
             if (board[row][col].type === 'point5') {
                 score += 5;
             } else if (board[row][col].type === 'point10') {
                 score += 10;
-            } else {
-                score -= 1; // Custo de movimento padrão é -1 ponto
             }
         }
     });
@@ -191,7 +208,7 @@ function reiniciar() {
     boardDiv.id = 'board'; // Set the ID of the new div
     document.getElementById('reiniciar').after(boardDiv); //Criar div para colocar novo tabuleiro
 
-    score = 50;
+    score = 51;
     board = [];
     path = [];
 
